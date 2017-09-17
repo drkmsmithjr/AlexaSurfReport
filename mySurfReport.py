@@ -15,6 +15,7 @@ from __future__ import print_function
 
 # --------------- Helpers that build all of the responses ----------------------
 
+
 def build_speechlet_response(title, output, reprompt_text, should_end_session):
     return {
         'outputSpeech': {
@@ -23,8 +24,8 @@ def build_speechlet_response(title, output, reprompt_text, should_end_session):
         },
         'card': {
             'type': 'Simple',
-            'title': "SessionSpeechlet - " + title,
-            'content': "SessionSpeechlet - " + output
+            'title': title,
+            'content': output
         },
         'reprompt': {
             'outputSpeech': {
@@ -43,6 +44,11 @@ def build_response(session_attributes, speechlet_response):
         'response': speechlet_response
     }
 
+    
+def create_numberOfTries_attributes(numberOfTries):
+    return {"numOfTries": numberOfTries }
+    
+    
 # defining the surf spots
 
 spots = {
@@ -195,7 +201,7 @@ class SurfSpot:
             if day >= daysInReport:
                 day = daysInReport - 1
             reportText=reportText+str(self.heightsMin[day])+"-"+str(self.heightsMax[day])+" ft. "+str(conditionTypes[self.regionalConditions[day]])+"  " + str(self.surfText[day])+"  "
-        reportText = reportText + "\n"    
+        #reportText = reportText + "\n"    
         #print reportText
         return reportText
 
@@ -204,12 +210,25 @@ def Get_Surf_Report_For_Spot(intent, session):
     """ Sets the color in the session and prepares the speech to reply to the
     user.
     """
-
+    teststr = ""
     card_title = 'Surf Checker Surf Report'
     session_attributes = {}
     should_end_session = False
     # check day (int) should we get forecast for
     Day = 0
+    
+    number_tries = 0
+    # check if the numberOfIntents attribute has been set.  If so, get the value and update.  If not, then set it.
+    if session.get('attributes', {}) and "numOfTries" in session.get('attributes', {}):
+        number_tries = session['attributes']['numOfTries']
+        #session_attributes = create_numberOfTries_attributes(number_tries)
+        #teststr = " the number of tries was again 1 "
+        #session.update('numberOfTries') = number_tries
+    #else:
+    #    number_tries = 0
+        #session_attributes = create_numberOfTries_attributes(number_tries)
+    
+    
     # string to modify the reply 
     daystring = " "
     today = datetime.datetime.now()
@@ -219,10 +238,10 @@ def Get_Surf_Report_For_Spot(intent, session):
             a = intent['slots']['SurfDay']['value']
             surfdate = datetime.datetime.strptime(a,'%Y-%m-%d')
             DayTimeDelta = surfdate - today
-            # this will equal -1 for today's forecast. Need to add 1 to work with surf report function
-            Day = DayTimeDelta.days + 1
+            # subtract three hours from the time.   I assume the time is ireland time.
+            Day = int((DayTimeDelta.total_seconds() + (60*60*6)) /(60*60*24) + 1)
             if Day > 6 or Day < 0 :
-                daystring = "We have the forecast for only 6 days.  "
+                #daystring = "We have the forecast for only 6 days.  "
                 Day = 0
             else:
                 if Day == 0:
@@ -243,20 +262,39 @@ def Get_Surf_Report_For_Spot(intent, session):
         report = SurfSpot(spot, spots[spot][0], spots[spot][1])
         report.getReport()
         # test if the report should be for today or tomorrow
-        speech_output = "The surf Report for " + \
+        if number_tries == 0:
+           number_tries = 1
+           speech_output = "The surf Report for " + \
                         daystring + \
-                        report.printReport(Day)
-        reprompt_text = "The surf Report for " +  \
-                        report.printReport(Day)
+                        report.printReport(Day) + ".\n" +" "+teststr + " " +\
+                        "Would you like another report?  Just say the spot name."
+           #session_attributes = create_numberOfTries_attributes(number_tries)
+        else:
+           number_tries = number_tries + 1
+           #session_attributes = create_numberOfTries_attributes(number_tries)
+           speech_output = "The surf Report for " + \
+                        daystring + \
+                        report.printReport(Day) + ".\n" +" "+teststr + " " +\
+                        "Would you like another report?"
+        reprompt_text = "Would you like another report?  Just say the spot name"
         should_end_session = False
+    elif spot == "no":
+        speech_output = "Have a nice Day."
+        reprompt_text = " "
+        should_end_session = True
     else:
         speech_output = "I'm not sure what your surf spot is. " \
                         "Please try again."
         reprompt_text = "I'm not sure what your surf spot is. " \
-                        "You can try again buy saying, " \
-                        "what is the surf report for uppers."
+                        "You can try again buy saying just the spot name, " \
+                        "Some examples are lowers, or salt creek."
+#    if number_tries == 0:
+    session_attributes = create_numberOfTries_attributes(number_tries)
     return build_response(session_attributes, build_speechlet_response(
-        card_title, speech_output, reprompt_text, should_end_session))
+            card_title, speech_output, reprompt_text, should_end_session))
+#    else:
+#     return build_response(session_attributes, build_speechlet_response(
+#            card_title, speech_output, reprompt_text, should_end_session))
 
 def get_welcome_response():
     """ If we wanted to initialize the session to have some attributes we could
@@ -268,8 +306,8 @@ def get_welcome_response():
     speech_output = "Welcome to the Surf Checker.   " \
                     "Please tell me the surf spot you need the forecast for.   For example say, " \
                     "what is the surf report for salt creek?" \
-                    "You can also just say the surf spot name: for example, uppers, Lowers, Salt Creek" \
-                    " Huntington state beach, "
+                    "You can also just say the surf spot name.  For example, just say uppers, lowers, Salt Creek," \
+                    "or Huntington state beach.  , "
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
     reprompt_text = "Please tell me the spot you are looking for by saying a surf spot, " 
@@ -279,7 +317,7 @@ def get_welcome_response():
 
 
 def handle_session_end_request():
-    card_title = "Session Ended"
+    card_title = "Thank you for trying the Surf Checker"
     speech_output = "Thank you for trying the surf checker." \
                     "Have a nice day! "
     # Setting this to true ends the session and exits the skill.
@@ -294,6 +332,7 @@ def handle_session_end_request():
 def on_session_started(session_started_request, session):
     """ Called when the session starts """
 
+        
     print("on_session_started requestId=" + session_started_request['requestId']
           + ", sessionId=" + session['sessionId'])
 
@@ -302,7 +341,7 @@ def on_launch(launch_request, session):
     """ Called when the user launches the skill without specifying what they
     want
     """
-
+    
     print("on_launch requestId=" + launch_request['requestId'] +
           ", sessionId=" + session['sessionId'])
     # Dispatch to your skill's launch
@@ -317,7 +356,8 @@ def on_intent(intent_request, session):
 
     intent = intent_request['intent']
     intent_name = intent_request['intent']['name']
-
+    
+    
     # Dispatch to your skill's intent handlers
     if intent_name == "GetSurfReportForSpot":
         return Get_Surf_Report_For_Spot(intent, session)
