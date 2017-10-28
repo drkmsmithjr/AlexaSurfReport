@@ -50,7 +50,7 @@ def create_numberOfTries_attributes(numberOfTries):
     
     
 # defining the surf spots
-
+"""
 spots = {
     'uppers':["4738","2950"],
     'upper trestles':["4738","2950"],
@@ -83,7 +83,49 @@ spots = {
     'Newport point':["4877","2143"],
     'blackies':["53412","2143"]    
 }
+"""
 
+# defining the surf spots
+# first number: SurlineID spot
+# second number: surfline Regional Spot
+# third number: NOAA tide ID location
+
+spots = {
+    'uppers':["4738","2950","TWC0419"],
+    'upper trestles':["4738","2950","TWC0419"],
+    'upper':["4738","2950","TWC0419"],
+    'salt creek':["4233","2950","TWC0419"],
+    'doheny':["4848","2950","TWC0419"],
+    'doheny state beach':["4848","2950","TWC0419"],
+    'lowers':["4740","2950","TWC0419"],
+    'lower trestles':["4740","2950","TWC0419"],
+    'lower':["4740","2950","TWC0419"],
+    't-street':["4235","2950","TWC0419"],
+    'T. street' :["4235","2950","TWC0419"],
+    'san clementi state beach':["4843","2950","TWC0419"],
+    'the point':["4237","2950","TWC0419"],
+    'old mans':["109918","2950","TWC0419"],
+    'hb pier':["4874","2143","9410580"],
+    'HB pier':["4874","2143","9410580"],
+    'h. b. pier':["4874","2143","9410580"],
+    'Huntington beach pier':["4874","2143","9410580"],
+    '56th street':["43103","2143","9410580"],
+    'fifty sixth street':["43103","2143","9410580"],
+    'the wedge':["4232","2143","9410580"],
+    'goldenwest':["4870","2143","9410580"],
+    'golden west':["4870","2143","9410580"],
+    'huntington state beach':["103681","2143","9410580"],
+    'Huntington state beach':["103681","2143","9410580"],
+    'seal beach':["4217","2143","9410580"],
+    'bolsa chica':["4868","2143","9410580"],
+    'bolsa chica state beach':["4868","2143","9410580"],
+    'Newport point':["4877","2143","9410580"],
+    'blackies':["53412","2143","9410580"],    
+    'oceanside harbor':["4238","2144","TWC0419"],
+    'oceanside pier south side':["4241","2144","TWC0419"],
+    'oceanside pier north side':["68366","2144","9410230"]
+    
+}
 
 
 # --------------- Functions that control the skill's behavior ------------------
@@ -171,7 +213,7 @@ class SurfSpot:
             daysAvgMin=0
             self.regionalConditions.append(conditionTypes.index(regionalReport["Analysis"]["generalCondition"][day]))
             if day == 0:
-               if (len(rep["Analysis"]["surfMax"]) > 0) :
+               if ((len(rep["Analysis"]["surfMax"]) > 0) and (rep["Analysis"]["surfMax"][day] != "")) :
                   daysAvgMax=rep["Analysis"]["surfMax"][day]
                   daysAvgMin=rep["Analysis"]["surfMin"][day]
                   self.surfText.append(rep["Analysis"]["surfText"][day])
