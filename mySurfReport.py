@@ -47,44 +47,7 @@ def build_response(session_attributes, speechlet_response):
     
 def create_numberOfTries_attributes(numberOfTries):
     return {"numOfTries": numberOfTries }
-    
-    
-# defining the surf spots
-"""
-spots = {
-    'uppers':["4738","2950"],
-    'upper trestles':["4738","2950"],
-    'upper':["4738","2950"],
-    'salt creek':["4233","2950"],
-    'doheny':["4848","2950"],
-    'doheny state beach':["4848","2950"],
-    'lowers':["4740","2950"],
-    'lower trestles':["4740","2950"],
-    'lower':["4740","2950"],
-    't-street':["4235","2950"],
-    'T. street' :["4235","2950"],
-    'san clementi state beach':["4843","2950"],
-    'the point':["4237","2950"],
-    'old mans':["109918","2950"],
-    'hb pier':["4874","2143"],
-    'HB pier':["4874","2143"],
-    'h. b. pier':["4874","2143"],
-    'Huntington beach pier':["4874","2143"],
-    '56th street':["43103","2143"],
-    'fifty sixth street':["43103","2143"],
-    'the wedge':["4232","2143"],
-    'goldenwest':["4870","2143"],
-    'golden west':["4870","2143"],
-    'huntington state beach':["103681","2143"],
-    'Huntington state beach':["103681","2143"],
-    'seal beach':["4217","2143"],
-    'bolsa chica':["4868","2143"],
-    'bolsa chica state beach':["4868","2143"],
-    'Newport point':["4877","2143"],
-    'blackies':["53412","2143"]    
-}
-"""
-
+        
 # defining the surf spots
 # first number: SurlineID spot
 # second number: surfline Regional Spot
