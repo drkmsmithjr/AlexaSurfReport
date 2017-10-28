@@ -121,9 +121,8 @@ spots = {
     'bolsa chica state beach':["4868","2143","9410580"],
     'Newport point':["4877","2143","9410580"],
     'blackies':["53412","2143","9410580"],    
-    'oceanside harbor':["4238","2144","TWC0419"],
-    'oceanside pier south side':["4241","2144","TWC0419"],
-    'oceanside pier north side':["68366","2144","9410230"]
+    'Oceanside harbor':["4238","2144","TWC0419"],
+    'Oceanside pier':["4241","2144","TWC0419"]
     
 }
 
