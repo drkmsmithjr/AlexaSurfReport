@@ -47,169 +47,9 @@ def build_response(session_attributes, speechlet_response):
     }
 
     
-def create_numberOfTries_attributes(numberOfTries):
-    return {"numOfTries": numberOfTries }
-        
-# defining the surf spots
-# first number: SurlineID spot
-# second number: surfline Regional Spot
-# third number: NOAA tide ID location
-
-# spots = {
-    # 'uppers':["4738","2950","TWC0419"],
-    # 'upper trestles':["4738","2950","TWC0419"],
-    # 'upper':["4738","2950","TWC0419"],
-    # 'salt creek':["4233","2950","TWC0419"],
-    # 'doheny':["4848","2950","TWC0419"],
-    # 'doheny state beach':["4848","2950","TWC0419"],
-    # 'lowers':["4740","2950","TWC0419"],
-    # 'lower trestles':["4740","2950","TWC0419"],
-    # 'lower':["4740","2950","TWC0419"],
-    # 't-street':["4235","2950","TWC0419"],
-    # 'T. street' :["4235","2950","TWC0419"],
-    # 'san clementi state beach':["4843","2950","TWC0419"],
-    # 'the point':["4237","2950","TWC0419"],
-    # 'old mans':["109918","2950","TWC0419"],
-    # 'hb pier':["4874","2143","9410580"],
-    # 'HB pier':["4874","2143","9410580"],
-    # 'h. b. pier':["4874","2143","9410580"],
-    # 'Huntington beach pier':["4874","2143","9410580"],
-    # '56th street':["43103","2143","9410580"],
-    # 'fifty sixth street':["43103","2143","9410580"],
-    # 'the wedge':["4232","2143","9410580"],
-    # 'goldenwest':["4870","2143","9410580"],
-    # 'golden west':["4870","2143","9410580"],
-    # 'huntington state beach':["103681","2143","9410580"],
-    # 'Huntington state beach':["103681","2143","9410580"],
-    # 'seal beach':["4217","2143","9410580"],
-    # 'bolsa chica':["4868","2143","9410580"],
-    # 'bolsa chica state beach':["4868","2143","9410580"],
-    # 'Newport point':["4877","2143","9410580"],
-    # 'blackies':["53412","2143","9410580"],    
-    # 'Oceanside harbor':["4238","2144","TWC0419"],
-    # 'Oceanside pier':["4241","2144","TWC0419"]
-    
-# }
-
-
-# --------------- Functions that control the skill's behavior ------------------
-
-
-# Class Surfspot uses the 
-# Surfline API Report Parser 
-# modified by Mark Smith
-# www.surfncircuit.com
-# removed the tide information
-# Used surfMax and surfMin from spot report and regional report 
-# added SurfText inputs.    
-
-# Based on Code Written by Colin Karpfinger
-# http://punchthrough.com/bean
-# http://punchthrough.com/bean/examples/surf-report-notifier/
-# https://github.com/PunchThrough/BeanSurfMap
-# copyright (c) 2014 Punch Through Design
-
-# import datetime
-# import urllib2
-# import json
-# import time
-# from decimal import *
-# import string
-
-# daysInReport = 6
-# conditionTypes=["","flat", "very poor", "poor","poor to fair","fair","fair to good","good","very good","good to epic","epic"]
-
-# #lowTides=[]
-# #highTides=[]
-
-# class SurfSpot:
-    # baseUrl="http://api.surfline.com/v1/forecasts/0000?resources=surf,analysis&days=6&getAllSpots=false&units=e&interpolate=false&showOptimal=false"
-    # heightsMax=[]
-    # heightsMin=[]
-
-    # surflineUrl=""
-    # tideUrl=""
-    # surflineRegionalUrl=""
-    # surflineName=""
-    # textConditions=[]
-    # spotName =""
-    # todaysLocalCondition=0
-    # regionalConditions=[]
-    
-    # def __init__(self, spotName, spotID, regionalID):
-        # # create object with the spot name, spotID and regionalID.  Both are available in HTTP addresss associaed with  
-        # # the surfline.com site.    
-        # self.spotName = spotName
-        # self.surflineUrl=self.baseUrl.replace("0000",spotID)
-        # self.surflineRegionalUrl=self.baseUrl.replace("0000",regionalID)
-
-        # self.heightsMax=[]
-        # self.heightsMin=[]
-        # self.surfText=[]
-        # self.regionalConditions=[]
-        
-    # def getReport(self):
-        # # use the spot API to get the current information
-        # # use the regional API address (regionalReport) to get the forecast information
-        
-        # webreq = urllib2.Request(self.surflineUrl, None, {'user-agent':'syncstream/vimeo'})
-        # opener = urllib2.build_opener()
-        # f = opener.open(webreq)
-        # fstr = f.read()
-        # fstr = fstr.replace(')','') #remove closing )
-        # fstr = fstr.replace(';','') #remove semicolon
-        # fstr = fstr.strip() #remove any whitespace in start/end
-        # rep = json.loads(fstr)
-
-        # webreq = urllib2.Request(self.surflineRegionalUrl, None, {'user-agent':'syncstream/vimeo'})
-        # opener = urllib2.build_opener()
-        # f = opener.open(webreq)
-        # fstr = f.read()
-        # fstr = fstr.replace(')','') #remove closing )
-        # fstr = fstr.replace(';','') #remove semicolon
-        # fstr = fstr.strip() #rem3ove any whitespace in start/end
-        # regionalReport=json.loads(fstr)
-
-
-        # self.surflineName=rep["name"]
-        # for day in range(0,daysInReport):
-            # daysAvgMax=0
-            # daysAvgMin=0
-            # self.regionalConditions.append(conditionTypes.index(regionalReport["Analysis"]["generalCondition"][day]))
-            # if day == 0:
-               # if ((len(rep["Analysis"]["surfMax"]) > 0) and (rep["Analysis"]["surfMax"][day] != "")) :
-                  # daysAvgMax=rep["Analysis"]["surfMax"][day]
-                  # daysAvgMin=rep["Analysis"]["surfMin"][day]
-                  # self.surfText.append(rep["Analysis"]["surfText"][day])
-               # else:
-                  # daysAvgMax=regionalReport["Analysis"]["surfMax"][day]
-                  # daysAvgMin=regionalReport["Analysis"]["surfMin"][day]
-                  # self.surfText.append(regionalReport["Analysis"]["surfText"][day])
-            # else:
-               # daysAvgMax=regionalReport["Analysis"]["surfMax"][day]
-               # daysAvgMin=regionalReport["Analysis"]["surfMin"][day]
-               # self.surfText.append(regionalReport["Analysis"]["surfText"][day])
-                               
- 
- # #           self.heightsMax.append(Decimal(daysAvgMax).quantize(Decimal('1'), rounding=ROUND_UP))
- # #           self.heightsMin.append(Decimal(daysAvgMin).quantize(Decimal('1'), rounding=ROUND_UP))
-            # self.heightsMax.append(daysAvgMax)
-            # self.heightsMin.append(daysAvgMin)
-            
-    # def printReport(self, day = None):
-    # # print the day in the report. day 1 is current day
-    # # when no day is present just show all days in forecast  
-        # reportText=self.spotName+" is "
-        # if day == None:
-            # for day in range(0,daysInReport):
-                # reportText=reportText+str(self.heightsMin[day])+"-"+str(self.heightsMax[day])+" ft. "+str(conditionTypes[self.regionalConditions[day]])+"  " + str(self.surfText[day])+"  "
-        # else:
-            # if day >= daysInReport:
-                # day = daysInReport - 1
-            # reportText=reportText+str(self.heightsMin[day])+"-"+str(self.heightsMax[day])+" ft. "+str(conditionTypes[self.regionalConditions[day]])+"  " + str(self.surfText[day])+"  "
-        # #reportText = reportText + "\n"    
-        # #print reportText
-        # return reportText
+def create_numberOfTries_attributes(numberOfTries,surfspotname):
+    return {"numOfTries": numberOfTries, "surfspotname":surfspotname }
+  
 
 
 def Get_Surf_Report_For_Spot(intent, session):
@@ -222,11 +62,14 @@ def Get_Surf_Report_For_Spot(intent, session):
     should_end_session = False
     # check day (int) should we get forecast for
     Day = 0
-    
+    surfspotname = ""
     number_tries = 0
     # check if the numberOfIntents attribute has been set.  If so, get the value and update.  If not, then set it.
     if session.get('attributes', {}) and "numOfTries" in session.get('attributes', {}):
         number_tries = session['attributes']['numOfTries']
+        surfspotname = session['attributes']['surfspotname']
+    
+
         #session_attributes = create_numberOfTries_attributes(number_tries)
         #teststr = " the number of tries was again 1 "
         #session.update('numberOfTries') = number_tries
@@ -259,13 +102,13 @@ def Get_Surf_Report_For_Spot(intent, session):
         else:
             daystring = " "
         
-
     if 'value' in intent['slots']['SurfSpot'] :
        spot = intent['slots']['SurfSpot']['value']
     else:
        spot = 'NoSpotDecodedByAlexa'
     if spot in spots:
-        report = SurfSpot(spot, spots[spot][0], spots[spot][1])
+        surfspotname = spot
+        report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2])
         report.getReport()
         # test if the report should be for today or tomorrow
         if number_tries == 0:
@@ -295,10 +138,147 @@ def Get_Surf_Report_For_Spot(intent, session):
                         "You can try again buy saying just the spot name, " \
                         "Some examples are lowers, or salt creek."
 #    if number_tries == 0:
-    session_attributes = create_numberOfTries_attributes(number_tries)
+    session_attributes = create_numberOfTries_attributes(number_tries,surfspotname)
     return build_response(session_attributes, build_speechlet_response(
             card_title, speech_output, reprompt_text, should_end_session))
 
+            
+def Get_Tide_Report_For_Spot(intent, session):
+    """ reports the tide report 
+    """
+    teststr = ""
+    card_title = 'Surf Checker Tide Report'
+    session_attributes = {}
+    should_end_session = False
+    # check day (int) should we get forecast for
+    Day = 0
+    number_tries = 0
+    surfspotname = ""
+    # check if the numberOfIntents attribute has been set.  If so, get the value and update.  If not, then set it.
+    if session.get('attributes', {}) and "numOfTries" in session.get('attributes', {}):
+        number_tries = session['attributes']['numOfTries']
+        surfspotname = session['attributes']['surfspotname']
+    
+        
+    # string to modify the reply 
+    daystring = " "
+    today = datetime.datetime.now()
+
+    if 'SurfDay' in intent['slots']:
+        if 'value' in intent['slots']['SurfDay']:
+            a = intent['slots']['SurfDay']['value']
+            surfdate = datetime.datetime.strptime(a,'%Y-%m-%d')
+            DayTimeDelta = surfdate - today
+            # subtract three hours from the time.   I assume the time is ireland time.
+            Day = int((DayTimeDelta.total_seconds() + (60*60*6)) /(60*60*24) + 1)
+            if Day > 6 or Day < 0 :
+                #daystring = "We have the forecast for only 6 days.  "
+                Day = 0
+            else:
+                if Day == 0:
+                   daystring = "today for "
+                elif Day == 1:
+                   daystring = "tomorrow for"
+                elif Day >= 2:
+                   daystring = surfdate.strftime('%A') + " for "
+        else:
+            daystring = " "
+        
+
+    if 'value' in intent['slots']['SurfSpot'] :
+       spot = intent['slots']['SurfSpot']['value']
+    else:
+       spot = surfspotname
+    if spot in spots:
+        report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2])
+        report.getTideReport()
+        # test if the report should be for today or tomorrow
+        if number_tries == 0:
+           number_tries = 1
+           speech_output = report.printTideReport(Day) + ".\n" +" "+teststr + " " +\
+                        "Would you like another report?  "
+           #session_attributes = create_numberOfTries_attributes(number_tries)
+        else:
+           number_tries = number_tries + 1
+           #session_attributes = create_numberOfTries_attributes(number_tries)
+           speech_output =  report.printTideReport(Day) + ".\n" +" "+teststr + " " +\
+                        "Would you like another report?"
+        reprompt_text = "Would you like another report?  "
+        should_end_session = False
+    elif spot == "no":
+        speech_output = "Have a nice Day."
+        reprompt_text = " "
+        should_end_session = True
+    else:
+        speech_output = "I'm not sure what your surf spot is. " \
+                        "Please try again."
+        reprompt_text = "I'm not sure what your surf spot is. " \
+                        "For example: What is the Tide Report for Salt Creek"
+#    if number_tries == 0:
+    session_attributes = create_numberOfTries_attributes(number_tries,surfspotname)
+    return build_response(session_attributes, build_speechlet_response(
+            card_title, speech_output, reprompt_text, should_end_session))
+
+            
+def Best_Day_To_Surf_Spot(intent, session):
+    """ reports the tide report 
+    """
+    teststr = ""
+    card_title = 'Surf Checker Best Day Report'
+    session_attributes = {}
+    should_end_session = False
+    # check day (int) should we get forecast for
+    Day = 0
+    number_tries = 0
+    surfspotname = ""
+    # check if the numberOfIntents attribute has been set.  If so, get the value and update.  If not, then set it.
+    if session.get('attributes', {}) and "numOfTries" in session.get('attributes', {}):
+        number_tries = session['attributes']['numOfTries']
+        surfspotname = session['attributes']['surfspotname']
+    
+        
+    # string to modify the reply 
+    daystring = " "
+    today = datetime.datetime.now()
+
+    if 'value' in intent['slots']['SurfSpot'] :
+       spot = intent['slots']['SurfSpot']['value']
+    else:
+       spot = surfspotname
+    if spot in spots:
+        report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2])
+        report.getReport()
+        # test if the report should be for today or tomorrow
+        if number_tries == 0:
+           number_tries = 1
+           speech_output = report.printBestDayToSurf() + ".\n" +" "+teststr + " " +\
+                        "on this day" +\
+                        report.printReport(report.bestdaytosurf) + ".\n" +\
+                        "Would you like another report?  "
+           #session_attributes = create_numberOfTries_attributes(number_tries)
+        else:
+           number_tries = number_tries + 1
+           #session_attributes = create_numberOfTries_attributes(number_tries)
+           speech_output = report.printBestDayToSurf() + ".\n" +" "+teststr + " " +\
+                        "on this day" +\
+                        report.printReport(report.bestdaytosurf) + ".\n" +\
+                        "Would you like another report? "
+        reprompt_text = "Would you like another report?  Just say the spot name"
+        should_end_session = False
+    elif spot == "no":
+        speech_output = "Have a nice Day."
+        reprompt_text = " "
+        should_end_session = True
+    else:
+        speech_output = "I'm not sure what your surf spot is. " \
+                        "Please try again."
+        reprompt_text = "I'm not sure what your surf spot is. " \
+                        "For example say: When is the best day to surf Salt Creek"
+#    if number_tries == 0:
+    session_attributes = create_numberOfTries_attributes(number_tries,surfspotname)
+    return build_response(session_attributes, build_speechlet_response(
+            card_title, speech_output, reprompt_text, should_end_session))
+            
 
 def get_welcome_response():
     """ If we wanted to initialize the session to have some attributes we could
@@ -308,10 +288,14 @@ def get_welcome_response():
     session_attributes = {}
     card_title = "Welcome from Surf Checker"
     speech_output = "Welcome to the Surf Checker.   " \
-                    "Please tell me the surf spot you need the forecast for.   For example say, " \
+                    "Please tell me the surf spot you need the surf or Tide forecast for.   For example say, " \
                     "what is the surf report for salt creek?" \
-                    "You can also just say the surf spot name.  For example, just say uppers, lowers, Salt Creek," \
-                    "or Huntington state beach.  , "
+                    "or say, What is the tide report for Huntington State Beach on Tuesday?" \
+                    "For a surf report, You can also just say the surf spot name.  For example, just say uppers, lowers, Salt Creek," \
+                    "or Huntington state beach. " \
+                    "Once you have the surf report for a spot you can just say," \
+                    " What is the tide report?" \
+                    " Or you can say, when is the best day to surf?"
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
     reprompt_text = "Please tell me the spot you are looking for by saying a surf spot, " 
@@ -319,6 +303,10 @@ def get_welcome_response():
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
 
+        
+        
+        
+        
 
 def handle_session_end_request():
     card_title = "Thank you for trying the Surf Checker"
@@ -365,6 +353,10 @@ def on_intent(intent_request, session):
     # Dispatch to your skill's intent handlers
     if intent_name == "GetSurfReportForSpot":
         return Get_Surf_Report_For_Spot(intent, session)
+    elif intent_name == "GetTideReportForSpot":
+        return Get_Tide_Report_For_Spot(intent, session)
+    elif intent_name == "BestDayToSurfSpot":
+        return Best_Day_To_Surf_Spot(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
