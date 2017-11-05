@@ -71,7 +71,7 @@ daysInReport = 6
 conditionTypes=["","flat", "very poor", "poor","poor to fair","fair","fair to good","good","very good","good to epic","epic"]
 
 # to account for the Server Location in Ireland
-hourcorrection = datetime.timedelta(hours = 6)
+hourcorrection = datetime.timedelta(hours = 7)
 
 class SurfSpot:
     baseUrl="http://api.surfline.com/v1/forecasts/0000?resources=surf,analysis&days=6&getAllSpots=false&units=e&interpolate=false&showOptimal=false"

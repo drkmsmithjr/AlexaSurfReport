@@ -190,6 +190,7 @@ def Get_Tide_Report_For_Spot(intent, session):
     else:
        spot = surfspotname
     if spot in spots:
+        surfspotname = spot
         report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2])
         report.getTideReport()
         # test if the report should be for today or tomorrow
@@ -246,6 +247,7 @@ def Best_Day_To_Surf_Spot(intent, session):
     else:
        spot = surfspotname
     if spot in spots:
+        surfspotname = spot
         report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2])
         report.getReport()
         # test if the report should be for today or tomorrow
