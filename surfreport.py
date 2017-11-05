@@ -27,6 +27,10 @@ import string
 
 # defining the surf spots
 
+# Defining the Spot Name
+# which name to you want Alexa to associate with this spot?   
+# It is ok to add custom ones, but I will need to review.   
+
 # Getting the SurfSpotID 
 #  the web report address for Salt Creek is:
 #  http://www.surfline.com/surf-report/salt-creek-southern-california_4233/
