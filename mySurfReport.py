@@ -292,6 +292,29 @@ def get_welcome_response():
     speech_output = "Welcome to the Surf Checker.   " \
                     "Please tell me the surf spot you need the surf or Tide forecast for.   For example say, " \
                     "what is the surf report for salt creek?" \
+                    "For a surf report, You can also just say the surf spot name.  For example, "\
+                    "say Lowers, or Salt Creek,      "\
+                    "Once you have the surf report for a spot you can just say," \
+                    " What is the tide report?" \
+                    " Or you can say, when is the best day to surf?"\
+                    " Ask for more help or just say the spot name you want the report for."
+    # If the user either does not reply to the welcome message or says something
+    # that is not understood, they will be prompted again with this text.
+    reprompt_text = "Please tell me the spot you are looking for by saying a surf spot, " 
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+        card_title, speech_output, reprompt_text, should_end_session))
+
+def get_help_response():
+    """ If we wanted to initialize the session to have some attributes we could
+    add those here
+    """
+
+    session_attributes = {}
+    card_title = "Getting Help for Surf Checker"
+    speech_output = "To get the surf or Tide forecast you need to include the spot name,   "\
+                    "For example say, " \
+                    "what is the surf report for salt creek?" \
                     "or say, What is the tide report for Huntington State Beach on Tuesday?" \
                     "For a surf report, You can also just say the surf spot name.  For example, just say uppers, lowers, Salt Creek," \
                     "or Huntington state beach. " \
@@ -304,15 +327,11 @@ def get_welcome_response():
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
-
-        
-        
-        
-        
+               
 
 def handle_session_end_request():
     card_title = "Thank you for trying the Surf Checker"
-    speech_output = "Thank you for trying the surf checker." \
+    speech_output = "Thank you for trying the surf checker ." \
                     "Have a nice day! "
     # Setting this to true ends the session and exits the skill.
     should_end_session = True
@@ -360,7 +379,7 @@ def on_intent(intent_request, session):
     elif intent_name == "BestDayToSurfSpot":
         return Best_Day_To_Surf_Spot(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
-        return get_welcome_response()
+        return get_help_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
         return handle_session_end_request()
     else:
