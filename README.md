@@ -11,7 +11,7 @@ copyright (c) 2017 www.surfncircuits.com
 
 Code was modified from the Alexa Skills Kit and uses the www.surfline.com API
 
-New surf locations are shown in the spots DICT definition .   You need the following:
+New surf locations are shown in the surfspot.cvs file.  To add additional spots,    You need the following:
 * "location name"
 * the SpotID
 * regional ID
