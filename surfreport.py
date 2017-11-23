@@ -23,39 +23,12 @@ import json
 import time
 from decimal import *
 import string
-
+import csv
 
 # defining the surf spots
-
-# Defining the Spot Name
-# which name to you want Alexa to associate with this spot?   
-# It is ok to add custom ones, but I will need to review.   
-
-# Getting the SurfSpotID 
-#  the web report address for Salt Creek is:
-#  http://www.surfline.com/surf-report/salt-creek-southern-california_4233/
-#  The SurfSpotID = 4233
-
-# Getting the RegionalID
-# the RegionalID is found by going to the REgional web report.  For Salt Creek, this is :
-# http://www.surfline.com/surf-forecasts/southern-california/south-orange-county_2950/
-# The RegionalIP = 2950
-
-# Getting the NOAA Tide ID location:
-# go to the following WEb page:
-# https://tidesandcurrents.noaa.gov/tide_predictions.html?gid=1393
-# find the closest Tide Sensor ID for salt Creek.   This will be San Clemente. 
-# the NOAA_TideID = TWC0419 
-# verify you get tide data using the following format
-#https://tidesandcurrents.noaa.gov/api/datagetter?product=predictions&application=NOS.COOPS.TAC.WL&begin_date=20171104&end_date=20171105&datum=MLLW&station=XXXXXX&time_zone=lst_ldt&units=english&interval=hilo&format=json 
-# where you replace XXXXXX with the NOAA_TideID name: (i.e. TWC0419)
-
-# To add new lines to the list below 
-# Format:  'spotname':["first number","second number","third number"],
-# NOTE: the last row does not have a ","
-# first number: SurfspotID spot 
-# second number: RegionalID Spot
-# third number: NOAA_TideID Spot
+# first number: SurlineID spot
+# second number: surfline Regional Spot
+# third number: NOAA tide ID location
 
 spots = {
     'uppers':["4738","2950","TWC0419"],
@@ -63,34 +36,32 @@ spots = {
     'upper':["4738","2950","TWC0419"],
     'salt creek':["4233","2950","TWC0419"],
     'doheny':["4848","2950","TWC0419"],
+    'do heaney':["4848","2950","TWC0419"],
     'doheny state beach':["4848","2950","TWC0419"],
     'lowers':["4740","2950","TWC0419"],
     'lower trestles':["4740","2950","TWC0419"],
     'lower':["4740","2950","TWC0419"],
     't-street':["4235","2950","TWC0419"],
-    'T. street' :["4235","2950","TWC0419"],
+    't. street' :["4235","2950","TWC0419"],
     'san clementi state beach':["4843","2950","TWC0419"],
     'the point':["4237","2950","TWC0419"],
     'old mans':["109918","2950","TWC0419"],
     'hb pier':["4874","2143","9410580"],
-    'HB pier':["4874","2143","9410580"],
     'h. b. pier':["4874","2143","9410580"],
-    'Huntington beach pier':["4874","2143","9410580"],
+    'huntington beach pier':["4874","2143","9410580"],
     '56th street':["43103","2143","9410580"],
     'fifty sixth street':["43103","2143","9410580"],
     'the wedge':["4232","2143","9410580"],
     'goldenwest':["4870","2143","9410580"],
     'golden west':["4870","2143","9410580"],
     'huntington state beach':["103681","2143","9410580"],
-    'Huntington state beach':["103681","2143","9410580"],
     'seal beach':["4217","2143","9410580"],
     'bolsa chica':["4868","2143","9410580"],
     'bolsa chica state beach':["4868","2143","9410580"],
-    'Newport point':["4877","2143","9410580"],
+    'newport point':["4877","2143","9410580"],
     'blackies':["53412","2143","9410580"],    
     'oceanside harbor':["4238","2144","TWC0419"],
-    'oceanside pier south side':["4241","2144","TWC0419"],
-    'oceanside pier north side':["68366","2144","TWC0419"]
+    'oceanside pier':["68366","2144","TWC0419"]
     
 }
 
@@ -99,6 +70,30 @@ conditionTypes=["","flat", "very poor", "poor","poor to fair","fair","fair to go
 
 # to account for the Server Location in Ireland
 hourcorrection = datetime.timedelta(hours = 7)
+
+# format of the Surfspot.csv file.  surf sPOTS CAN BE ANY CASE They will be converted to LOWER
+# case below
+# row 1 top of file:   Surf Spot	SurfID	Regional ID	Tide Info
+# row 2 regions:    North San Diego
+# row 3 spot: Tamarack	4242	2144	9410230
+# row 4 spot:"
+# row x Region:
+# row x+1 spots:
+
+def getsurfspots(spots2):
+   filename = "Surfspot.csv"
+   with open(filename, 'rb') as csvfile:
+      csvreader = csv.reader(csvfile)
+      for row in csvreader:
+         if row[0] != 'Surf Spot' and row[1] != "":
+            #print row
+            spots[row[0].lower()] = [row[1],row[2],row[3]]
+         #else: 
+            #print("the first row or a region label")
+   #spots2['Tamarack'] = ["4242","2144","9410230"]  
+   return spots2
+
+
 
 class SurfSpot:
     baseUrl="http://api.surfline.com/v1/forecasts/0000?resources=surf,analysis&days=6&getAllSpots=false&units=e&interpolate=false&showOptimal=false"
@@ -329,16 +324,16 @@ class SurfSpot:
             self.regionalConditions.append(conditionTypes.index(regionalReport["Analysis"]["generalCondition"][day]))
             if day == 0:
                if ((len(rep["Analysis"]["surfMax"]) > 0) and (rep["Analysis"]["surfMax"][day] != "")) :
-                  daysAvgMax=rep["Analysis"]["surfMax"][day]
-                  daysAvgMin=rep["Analysis"]["surfMin"][day]
+                  daysAvgMax=int(rep["Analysis"]["surfMax"][day])
+                  daysAvgMin=int(rep["Analysis"]["surfMin"][day])
                   self.surfText.append(rep["Analysis"]["surfText"][day])
                else:
-                  daysAvgMax=regionalReport["Analysis"]["surfMax"][day]
-                  daysAvgMin=regionalReport["Analysis"]["surfMin"][day]
+                  daysAvgMax=int(regionalReport["Analysis"]["surfMax"][day])
+                  daysAvgMin=int(regionalReport["Analysis"]["surfMin"][day])
                   self.surfText.append(regionalReport["Analysis"]["surfText"][day])
             else:
-               daysAvgMax=regionalReport["Analysis"]["surfMax"][day]
-               daysAvgMin=regionalReport["Analysis"]["surfMin"][day]
+               daysAvgMax=int(regionalReport["Analysis"]["surfMax"][day])
+               daysAvgMin=int(regionalReport["Analysis"]["surfMin"][day])
                self.surfText.append(regionalReport["Analysis"]["surfText"][day])
                                 
  #           self.heightsMax.append(Decimal(daysAvgMax).quantize(Decimal('1'), rounding=ROUND_UP))
@@ -347,6 +342,8 @@ class SurfSpot:
             self.heightsMin.append(daysAvgMin)
             
         self.bestdaysearch()
+        #print(self.heightsMax)
+        #print(self.heightsMin)
     
     def bestdaysearch(self):
     # search for the best day to surf

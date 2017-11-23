@@ -10,7 +10,7 @@ mySurfReport
 # copyright (c) 2014 Punch Through Design
 """
 from __future__ import print_function
-from surfreport import SurfSpot,spots
+from surfreport import SurfSpot,spots,getsurfspots
 import datetime
 
 
@@ -52,7 +52,7 @@ def create_numberOfTries_attributes(numberOfTries,surfspotname):
   
 
 
-def Get_Surf_Report_For_Spot(intent, session):
+def Get_Surf_Report_For_Spot(intent, session,spots):
     """ Sets the color in the session and prepares the speech to reply to the
     user.
     """
@@ -67,6 +67,7 @@ def Get_Surf_Report_For_Spot(intent, session):
     # check if the numberOfIntents attribute has been set.  If so, get the value and update.  If not, then set it.
     if session.get('attributes', {}) and "numOfTries" in session.get('attributes', {}):
         number_tries = session['attributes']['numOfTries']
+    if session.get('attributes',{}) and "surfspotname" in session.get('attributes',{}):
         surfspotname = session['attributes']['surfspotname']
     
 
@@ -103,7 +104,7 @@ def Get_Surf_Report_For_Spot(intent, session):
             daystring = " "
         
     if 'value' in intent['slots']['SurfSpot'] :
-       spot = intent['slots']['SurfSpot']['value']
+       spot = intent['slots']['SurfSpot']['value'].lower()
     else:
        spot = 'NoSpotDecodedByAlexa'
     if spot in spots:
@@ -143,7 +144,7 @@ def Get_Surf_Report_For_Spot(intent, session):
             card_title, speech_output, reprompt_text, should_end_session))
 
             
-def Get_Tide_Report_For_Spot(intent, session):
+def Get_Tide_Report_For_Spot(intent, session,spots):
     """ reports the tide report 
     """
     teststr = ""
@@ -192,20 +193,25 @@ def Get_Tide_Report_For_Spot(intent, session):
     if spot in spots:
         surfspotname = spot
         report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2])
-        report.getTideReport()
-        # test if the report should be for today or tomorrow
-        if number_tries == 0:
-           number_tries = 1
-           speech_output = report.printTideReport(Day) + ".\n" +" "+teststr + " " +\
-                        "Would you like another report?  "
-           #session_attributes = create_numberOfTries_attributes(number_tries)
-        else:
-           number_tries = number_tries + 1
-           #session_attributes = create_numberOfTries_attributes(number_tries)
-           speech_output =  report.printTideReport(Day) + ".\n" +" "+teststr + " " +\
-                        "Would you like another report?"
-        reprompt_text = "Would you like another report?  "
-        should_end_session = False
+        try:
+           report.getTideReport()
+           # test if the report should be for today or tomorrow
+           if number_tries == 0:
+              number_tries = 1
+              speech_output = report.printTideReport(Day) + ".\n" +" "+teststr + " " +\
+                           "Would you like another report?  "
+              #session_attributes = create_numberOfTries_attributes(number_tries)
+           else:
+              number_tries = number_tries + 1
+              #session_attributes = create_numberOfTries_attributes(number_tries)
+              speech_output =  report.printTideReport(Day) + ".\n" +" "+teststr + " " +\
+                           "Would you like another report?"
+           reprompt_text = "Would you like another report?  "
+           should_end_session = False
+        except:
+           speech_output = "The NOAA Tide server is being updated: please try back in a few days.  Would you like another report?"
+           reprompt_text = "Would you like another report?  "
+           should_end_session = False
     elif spot == "no":
         speech_output = "Have a nice Day."
         reprompt_text = " "
@@ -221,7 +227,7 @@ def Get_Tide_Report_For_Spot(intent, session):
             card_title, speech_output, reprompt_text, should_end_session))
 
             
-def Best_Day_To_Surf_Spot(intent, session):
+def Best_Day_To_Surf_Spot(intent, session,spots):
     """ reports the tide report 
     """
     teststr = ""
@@ -369,15 +375,16 @@ def on_intent(intent_request, session):
 
     intent = intent_request['intent']
     intent_name = intent_request['intent']['name']
-    
+    allspots = {}
+    allspots = getsurfspots(spots)    
     
     # Dispatch to your skill's intent handlers
     if intent_name == "GetSurfReportForSpot":
-        return Get_Surf_Report_For_Spot(intent, session)
+        return Get_Surf_Report_For_Spot(intent, session,allspots)
     elif intent_name == "GetTideReportForSpot":
-        return Get_Tide_Report_For_Spot(intent, session)
+        return Get_Tide_Report_For_Spot(intent, session,allspots)
     elif intent_name == "BestDayToSurfSpot":
-        return Best_Day_To_Surf_Spot(intent, session)
+        return Best_Day_To_Surf_Spot(intent, session,allspots)
     elif intent_name == "AMAZON.HelpIntent":
         return get_help_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
