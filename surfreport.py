@@ -29,39 +29,40 @@ import csv
 # first number: SurlineID spot
 # second number: surfline Regional Spot
 # third number: NOAA tide ID location
+# forth number: NOAA Water temp location backup.  If not available at Tide ID location
 
 spots = {
-    'uppers':["4738","2950","TWC0419"],
-    'upper trestles':["4738","2950","TWC0419"],
-    'upper':["4738","2950","TWC0419"],
-    'salt creek':["4233","2950","TWC0419"],
-    'doheny':["4848","2950","TWC0419"],
-    'do heaney':["4848","2950","TWC0419"],
-    'doheny state beach':["4848","2950","TWC0419"],
-    'lowers':["4740","2950","TWC0419"],
-    'lower trestles':["4740","2950","TWC0419"],
-    'lower':["4740","2950","TWC0419"],
-    't-street':["4235","2950","TWC0419"],
-    't. street' :["4235","2950","TWC0419"],
-    'san clementi state beach':["4843","2950","TWC0419"],
-    'the point':["4237","2950","TWC0419"],
-    'old mans':["109918","2950","TWC0419"],
-    'hb pier':["4874","2143","9410580"],
-    'h. b. pier':["4874","2143","9410580"],
-    'huntington beach pier':["4874","2143","9410580"],
-    '56th street':["43103","2143","9410580"],
-    'fifty sixth street':["43103","2143","9410580"],
-    'the wedge':["4232","2143","9410580"],
-    'goldenwest':["4870","2143","9410580"],
-    'golden west':["4870","2143","9410580"],
-    'huntington state beach':["103681","2143","9410580"],
-    'seal beach':["4217","2143","9410580"],
-    'bolsa chica':["4868","2143","9410580"],
-    'bolsa chica state beach':["4868","2143","9410580"],
-    'newport point':["4877","2143","9410580"],
-    'blackies':["53412","2143","9410580"],    
-    'oceanside harbor':["4238","2144","TWC0419"],
-    'oceanside pier':["68366","2144","TWC0419"]
+    'uppers':["4738","2950","TWC0419","TWC0419"],
+    'upper trestles':["4738","2950","TWC0419","TWC0419"],
+    'upper':["4738","2950","TWC0419","TWC0419"],
+    'salt creek':["4233","2950","TWC0419","TWC0419"],
+    'doheny':["4848","2950","TWC0419","TWC0419"],
+    'do heaney':["4848","2950","TWC0419","TWC0419"],
+    'doheny state beach':["4848","2950","TWC0419","TWC0419"],
+    'lowers':["4740","2950","TWC0419","TWC0419"],
+    'lower trestles':["4740","2950","TWC0419","TWC0419"],
+    'lower':["4740","2950","TWC0419","TWC0419"],
+    't-street':["4235","2950","TWC0419","TWC0419"],
+    't. street' :["4235","2950","TWC0419","TWC0419"],
+    'san clementi state beach':["4843","2950","TWC0419","TWC0419"],
+    'the point':["4237","2950","TWC0419","TWC0419"],
+    'old mans':["109918","2950","TWC0419","TWC0419"],
+    'hb pier':["4874","2143","9410580","TWC0419"],
+    'h. b. pier':["4874","2143","9410580","TWC0419"],
+    'huntington beach pier':["4874","2143","9410580","TWC0419"],
+    '56th street':["43103","2143","9410580","TWC0419"],
+    'fifty sixth street':["43103","2143","9410580","TWC0419"],
+    'the wedge':["4232","2143","9410580","TWC0419"],
+    'goldenwest':["4870","2143","9410580","TWC0419"],
+    'golden west':["4870","2143","9410580","TWC0419"],
+    'huntington state beach':["103681","2143","9410580","TWC0419"],
+    'seal beach':["4217","2143","9410580","TWC0419"],
+    'bolsa chica':["4868","2143","9410580","TWC0419"],
+    'bolsa chica state beach':["4868","2143","9410580","TWC0419"],
+    'newport point':["4877","2143","9410580","TWC0419"],
+    'blackies':["53412","2143","9410580","TWC0419"],    
+    'oceanside harbor':["4238","2144","TWC0419","TWC0419"],
+    'oceanside pier':["68366","2144","TWC0419","TWC0419"]
     
 }
 
@@ -87,7 +88,7 @@ def getsurfspots(spots2):
       for row in csvreader:
          if row[0] != 'Surf Spot' and row[1] != "":
             #print row
-            spots[row[0].lower()] = [row[1],row[2],row[3]]
+            spots[row[0].lower()] = [row[1],row[2],row[3],row[4]] 
          #else: 
             #print("the first row or a region label")
    #spots2['Tamarack'] = ["4242","2144","9410230"]  
@@ -101,7 +102,7 @@ class SurfSpot:
     # ZZZZZZZZ equals YEAR 4 characters, MOnth 2 characters, Day 2 characters
     # YYYYYYYY equals YEAR 4 characters, month 2 characters, day 2 charactors
     # XXXXXXX is from the NOAA station number.  Some stations need testing to be sure    
-    baseUrlNoaa="https://tidesandcurrents.noaa.gov/api/datagetter?product=predictions&application=NOS.COOPS.TAC.WL&begin_date=ZZZZZZZZ&end_date=YYYYYYYY&datum=MLLW&station=XXXXXXX&time_zone=lst_ldt&units=english&interval=hilo&format=json"
+    baseUrlNoaa="https://tidesandcurrents.noaa.gov/api/datagetter?product=predictions&application=Surfncircuits.com.surf.checker&begin_date=ZZZZZZZZ&end_date=YYYYYYYY&datum=MLLW&station=XXXXXXX&time_zone=lst_ldt&units=english&interval=hilo&format=json"
     heightsMax=[]
     heightsMin=[]
 
@@ -115,7 +116,7 @@ class SurfSpot:
     regionalConditions=[]
     Tides=[]
     
-    def __init__(self, spotName, spotID, regionalID, tideID):
+    def __init__(self, spotName, spotID, regionalID, tideID, waterID = 0):
         # create object with the spot name, spotID and regionalID.  Both are available in HTTP addresss associaed with  
         # the surfline.com site.    
         self.spotName = spotName
@@ -133,7 +134,19 @@ class SurfSpot:
         self.noaaTideUrl=self.noaaTideUrl.replace("ZZZZZZZZ",now.strftime("%Y%m%d"))
         self.noaaTideUrl=self.noaaTideUrl.replace("YYYYYYYY",nowdayssix.strftime("%Y%m%d"))
 
-        #print(self.noaaTideUrl)
+        # create the water temp ULR address to the CO_OPS API at NOAA
+        # replace tideID for the surf spot
+        if (waterID == 0) or (waterID == ''):
+           self.noaaWaterTempUrl=self.baseUrlNoaa.replace("XXXXXXX",tideID)
+        else:
+           self.noaaWaterTempUrl=self.baseUrlNoaa.replace("XXXXXXX",waterID)
+        #create the water temperature ULR.  Replace PRODUCT:predictions with water_temperature
+        self.noaaWaterTempUrl=self.noaaWaterTempUrl.replace("product=predictions","product=water_temperature")# use the beginning date
+        self.noaaWaterTempUrl = self.noaaWaterTempUrl.replace("ZZZZZZZZ",now.strftime("%Y%m%d"))
+        #replace the end_date with range=3 to get the first three hours of water temperature
+        self.noaaWaterTempUrl=self.noaaWaterTempUrl.replace("end_date=YYYYYYYY","range=3")       
+        
+        #print(self.noaaWaterTempUrl)
         # all these arrays can have totals each day        
         self.heightsMax=[]
         self.heightsMin=[]
@@ -156,6 +169,8 @@ class SurfSpot:
         # default best day to surf is today
         self.bestdaytosurf = 0
         
+        # water temperatuer
+        self.waterTemp = 0
         
     def parseTideReport(self,tideReport):
     
@@ -288,9 +303,30 @@ class SurfSpot:
         tideReport=json.loads(fstr)
         #print tideReport["predictions"][0]["type"]                           
         # get tide information 
-        self.parseTideReport(tideReport)  
-           
+        self.parseTideReport(tideReport)
+        
+    def getWaterTemp(self):       
+        webreq = urllib2.Request(self.noaaWaterTempUrl, None, {'user-agent':'www.surfncircuits.com'})
+        f = urllib2.urlopen(webreq)
+        fstr = f.read()
+        #print fstr
+        WaterTempReport=json.loads(fstr)    
+        #print(WaterTempReport["data"])        
+        # average the last three hours of datagetter
+        count = 0
+        tempsum = 0
+        if WaterTempReport.get("data"):
+           for t in range(len(WaterTempReport["data"])):
+              count += 1
+              tempsum = tempsum + float(WaterTempReport["data"][t]["v"])
+              #print(tempsum)
+           self.waterTemp =  round(float(tempsum/count),1)
+        else:
+           self.waterTemp = 0
+        #print(self.waterTemp)
                 
+
+        
     def getReport(self):
         # use the spot API to get the current information
         # use the regional API address (regionsalReport) to get the forecast information
@@ -448,3 +484,12 @@ class SurfSpot:
            reportText = "The Best Day to Surf is this upcoming " + bestsurfday.strftime("%A") + "."
  
         return reportText
+        
+    def printWaterTemp(self):
+   
+        if (self.waterTemp ==0):
+           reportText = "Sorry, the Water temperature is not available for " + self.spotName
+        else:
+           reportText = "The water Temperature for " + self.spotName + " is " + str(self.waterTemp) +  " degrees Fahrenheit."
+ 
+        return reportText    

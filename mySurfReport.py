@@ -109,7 +109,7 @@ def Get_Surf_Report_For_Spot(intent, session,spots):
        spot = 'NoSpotDecodedByAlexa'
     if spot in spots:
         surfspotname = spot
-        report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2])
+        report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2], spots[spot][3])
         report.getReport()
         # test if the report should be for today or tomorrow
         if number_tries == 0:
