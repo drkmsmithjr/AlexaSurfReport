@@ -32,37 +32,37 @@ import csv
 # forth number: NOAA Water temp location backup.  If not available at Tide ID location
 
 spots = {
-    'uppers':["4738","2950","TWC0419","TWC0419"],
-    'upper trestles':["4738","2950","TWC0419","TWC0419"],
-    'upper':["4738","2950","TWC0419","TWC0419"],
-    'salt creek':["4233","2950","TWC0419","TWC0419"],
-    'doheny':["4848","2950","TWC0419","TWC0419"],
-    'do heaney':["4848","2950","TWC0419","TWC0419"],
-    'doheny state beach':["4848","2950","TWC0419","TWC0419"],
-    'lowers':["4740","2950","TWC0419","TWC0419"],
-    'lower trestles':["4740","2950","TWC0419","TWC0419"],
-    'lower':["4740","2950","TWC0419","TWC0419"],
-    't-street':["4235","2950","TWC0419","TWC0419"],
-    't. street' :["4235","2950","TWC0419","TWC0419"],
-    'san clementi state beach':["4843","2950","TWC0419","TWC0419"],
-    'the point':["4237","2950","TWC0419","TWC0419"],
-    'old mans':["109918","2950","TWC0419","TWC0419"],
-    'hb pier':["4874","2143","9410580","TWC0419"],
-    'h. b. pier':["4874","2143","9410580","TWC0419"],
-    'huntington beach pier':["4874","2143","9410580","TWC0419"],
-    '56th street':["43103","2143","9410580","TWC0419"],
-    'fifty sixth street':["43103","2143","9410580","TWC0419"],
-    'the wedge':["4232","2143","9410580","TWC0419"],
-    'goldenwest':["4870","2143","9410580","TWC0419"],
-    'golden west':["4870","2143","9410580","TWC0419"],
-    'huntington state beach':["103681","2143","9410580","TWC0419"],
-    'seal beach':["4217","2143","9410580","TWC0419"],
-    'bolsa chica':["4868","2143","9410580","TWC0419"],
-    'bolsa chica state beach':["4868","2143","9410580","TWC0419"],
-    'newport point':["4877","2143","9410580","TWC0419"],
-    'blackies':["53412","2143","9410580","TWC0419"],    
-    'oceanside harbor':["4238","2144","TWC0419","TWC0419"],
-    'oceanside pier':["68366","2144","TWC0419","TWC0419"]
+    'uppers':["4738","2950","TWC0419","9410230"],
+    'upper trestles':["4738","2950","TWC0419","9410230"],
+    'upper':["4738","2950","TWC0419","9410230"],
+    'salt creek':["4233","2950","TWC0419","9410230"],
+    'doheny':["4848","2950","TWC0419","9410230"],
+    'do heaney':["4848","2950","TWC0419","9410230"],
+    'doheny state beach':["4848","2950","TWC0419","9410230"],
+    'lowers':["4740","2950","TWC0419","9410230"],
+    'lower trestles':["4740","2950","TWC0419","9410230"],
+    'lower':["4740","2950","TWC0419","9410230"],
+    't-street':["4235","2950","TWC0419","9410230"],
+    't. street' :["4235","2950","TWC0419","9410230"],
+    'san clementi state beach':["4843","2950","TWC0419","9410230"],
+    'the point':["4237","2950","TWC0419","9410230"],
+    'old mans':["109918","2950","TWC0419","9410230"],
+    'hb pier':["4874","2143","9410580","9410230"],
+    'h. b. pier':["4874","2143","9410580","9410230"],
+    'huntington beach pier':["4874","2143","9410580","9410230"],
+    '56th street':["43103","2143","9410580","9410230"],
+    'fifty sixth street':["43103","2143","9410580","9410230"],
+    'the wedge':["4232","2143","9410580","9410230"],
+    'goldenwest':["4870","2143","9410580","9410230"],
+    'golden west':["4870","2143","9410580","9410230"],
+    'huntington state beach':["103681","2143","9410580","9410230"],
+    'seal beach':["4217","2143","9410580","9410230"],
+    'bolsa chica':["4868","2143","9410580","9410230"],
+    'bolsa chica state beach':["4868","2143","9410580","9410230"],
+    'newport point':["4877","2143","9410580","9410230"],
+    'blackies':["53412","2143","9410580","9410230"],    
+    'oceanside harbor':["4238","2144","TWC0419","9410230"],
+    'oceanside pier':["68366","2144","TWC0419","9410230"]
     
 }
 
@@ -126,8 +126,10 @@ class SurfSpot:
         # get today's datetime and x days ahead to find all tide swings between days
         now = datetime.date.today()
         #print(now.strftime("%Y%m%d"))
+        daysone = datetime.timedelta(days = 1)
         dayssix = datetime.timedelta(days = daysInReport)
         nowdayssix = now+dayssix
+        nowminusoneday = now-daysone
         #print(nowdayssix.strftime("%Y%m%d"))
         
         self.noaaTideUrl=self.baseUrlNoaa.replace("XXXXXXX",tideID)
@@ -141,8 +143,10 @@ class SurfSpot:
         else:
            self.noaaWaterTempUrl=self.baseUrlNoaa.replace("XXXXXXX",waterID)
         #create the water temperature ULR.  Replace PRODUCT:predictions with water_temperature
-        self.noaaWaterTempUrl=self.noaaWaterTempUrl.replace("product=predictions","product=water_temperature")# use the beginning date
-        self.noaaWaterTempUrl = self.noaaWaterTempUrl.replace("ZZZZZZZZ",now.strftime("%Y%m%d"))
+        self.noaaWaterTempUrl=self.noaaWaterTempUrl.replace("product=predictions","product=water_temperature")
+        # use the beginning date
+        # I had to use yesterday's date to work with Alexa.  I assume because server is 12 hours ahead
+        self.noaaWaterTempUrl = self.noaaWaterTempUrl.replace("ZZZZZZZZ",nowminusoneday.strftime("%Y%m%d"))
         #replace the end_date with range=3 to get the first three hours of water temperature
         self.noaaWaterTempUrl=self.noaaWaterTempUrl.replace("end_date=YYYYYYYY","range=3")       
         

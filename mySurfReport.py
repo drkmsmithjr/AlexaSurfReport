@@ -158,6 +158,7 @@ def Get_Tide_Report_For_Spot(intent, session,spots):
     # check if the numberOfIntents attribute has been set.  If so, get the value and update.  If not, then set it.
     if session.get('attributes', {}) and "numOfTries" in session.get('attributes', {}):
         number_tries = session['attributes']['numOfTries']
+    if session.get('attributes',{}) and "surfspotname" in session.get('attributes',{}):
         surfspotname = session['attributes']['surfspotname']
     
         
@@ -192,7 +193,7 @@ def Get_Tide_Report_For_Spot(intent, session,spots):
        spot = surfspotname
     if spot in spots:
         surfspotname = spot
-        report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2])
+        report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2], spots[spot][3])
         try:
            report.getTideReport()
            # test if the report should be for today or tomorrow
@@ -241,6 +242,7 @@ def Best_Day_To_Surf_Spot(intent, session,spots):
     # check if the numberOfIntents attribute has been set.  If so, get the value and update.  If not, then set it.
     if session.get('attributes', {}) and "numOfTries" in session.get('attributes', {}):
         number_tries = session['attributes']['numOfTries']
+    if session.get('attributes',{}) and "surfspotname" in session.get('attributes',{}):
         surfspotname = session['attributes']['surfspotname']
     
         
@@ -254,7 +256,7 @@ def Best_Day_To_Surf_Spot(intent, session,spots):
        spot = surfspotname
     if spot in spots:
         surfspotname = spot
-        report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2])
+        report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2], spots[spot][3])
         report.getReport()
         # test if the report should be for today or tomorrow
         if number_tries == 0:
@@ -287,7 +289,66 @@ def Best_Day_To_Surf_Spot(intent, session,spots):
     return build_response(session_attributes, build_speechlet_response(
             card_title, speech_output, reprompt_text, should_end_session))
             
+def Get_Water_Temp_For_Spot(intent, session,spots):
+    """ reports the tide report 
+    """
+    teststr = ""
+    card_title = 'Surf Checker Water Temp Report'
+    session_attributes = {}
+    should_end_session = False
+    # check day (int) should we get forecast for
+    Day = 0
+    number_tries = 0
+    surfspotname = ""
+    # check if the numberOfIntents attribute has been set.  If so, get the value and update.  If not, then set it.
+    if session.get('attributes', {}) and "numOfTries" in session.get('attributes', {}):
+        number_tries = session['attributes']['numOfTries']
+    if session.get('attributes',{}) and "surfspotname" in session.get('attributes',{}):
+        surfspotname = session['attributes']['surfspotname']
+            
+    # string to modify the reply 
+    daystring = " "
+    today = datetime.datetime.now()
 
+    if 'value' in intent['slots']['SurfSpot'] :
+       spot = intent['slots']['SurfSpot']['value']
+    else:
+       spot = surfspotname
+    if spot in spots:
+        surfspotname = spot
+        report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2], spots[spot][3])
+        #teststr = str(spots[spot][3]) + " " + str(spot) + " "
+        report.getWaterTemp()
+        #teststr = teststr + "water temp =" + str(report.waterTemp) + " " + str(report.noaaWaterTempUrl)
+        # test if the report should be for today or tomorrow
+        if number_tries == 0:
+           number_tries = 1
+           speech_output = report.printWaterTemp() + ".\n" +" "+teststr + " " +\
+                        "Would you like another report?  "
+           #session_attributes = create_numberOfTries_attributes(number_tries)
+        else:
+           number_tries = number_tries + 1
+           #session_attributes = create_numberOfTries_attributes(number_tries)
+           speech_output = report.printWaterTemp() + ".\n" +" "+teststr + " " +\
+                        "Would you like another report? "
+        reprompt_text = "Would you like another report?  Just say the spot name"
+        should_end_session = False
+    elif spot == "no":
+        speech_output = "Have a nice Day."
+        reprompt_text = " "
+        should_end_session = True
+    else:
+        speech_output = "I'm not sure what your surf spot is. " \
+                        "Please try again."
+        reprompt_text = "I'm not sure what your surf spot is. " \
+                        "For example say: What is the water temp at Salt Creek"
+#    if number_tries == 0:
+    session_attributes = create_numberOfTries_attributes(number_tries,surfspotname)
+    return build_response(session_attributes, build_speechlet_response(
+            card_title, speech_output, reprompt_text, should_end_session))
+
+            
+            
 def get_welcome_response():
     """ If we wanted to initialize the session to have some attributes we could
     add those here
@@ -303,7 +364,7 @@ def get_welcome_response():
                     "Once you have the surf report for a spot you can just say," \
                     " What is the tide report?" \
                     " Or you can say, when is the best day to surf?"\
-                    " Ask for more help or just say the spot name you want the report for."
+                    " To continue just say the spot name or ask for more help."
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
     reprompt_text = "Please tell me the spot you are looking for by saying a surf spot, " 
@@ -326,7 +387,8 @@ def get_help_response():
                     "or Huntington state beach. " \
                     "Once you have the surf report for a spot you can just say," \
                     " What is the tide report?" \
-                    " Or you can say, when is the best day to surf?"
+                    " Or you can say, when is the best day to surf?"\
+                    " Or you can say, what is the water temp?"
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
     reprompt_text = "Please tell me the spot you are looking for by saying a surf spot, " 
@@ -385,6 +447,8 @@ def on_intent(intent_request, session):
         return Get_Tide_Report_For_Spot(intent, session,allspots)
     elif intent_name == "BestDayToSurfSpot":
         return Best_Day_To_Surf_Spot(intent, session,allspots)
+    elif intent_name == "GetWaterTempForSpot":
+        return Get_Water_Temp_For_Spot(intent, session,allspots)
     elif intent_name == "AMAZON.HelpIntent":
         return get_help_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
