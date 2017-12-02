@@ -106,7 +106,7 @@ def Get_Surf_Report_For_Spot(intent, session,spots):
     if 'value' in intent['slots']['SurfSpot'] :
        spot = intent['slots']['SurfSpot']['value'].lower()
     else:
-       spot = 'NoSpotDecodedByAlexa'
+       spot = surfspotname
     if spot in spots:
         surfspotname = spot
         report = SurfSpot(spot, spots[spot][0], spots[spot][1], spots[spot][2], spots[spot][3])
@@ -218,6 +218,7 @@ def Get_Tide_Report_For_Spot(intent, session,spots):
         reprompt_text = " "
         should_end_session = True
     else:
+        
         speech_output = "I'm not sure what your surf spot is. " \
                         "Please try again."
         reprompt_text = "I'm not sure what your surf spot is. " \
@@ -281,7 +282,7 @@ def Best_Day_To_Surf_Spot(intent, session,spots):
         should_end_session = True
     else:
         speech_output = "I'm not sure what your surf spot is. " \
-                        "Please try again."
+                        "Please try again and include the surf spot.  For example say: When is the best day to surf salt creek."
         reprompt_text = "I'm not sure what your surf spot is. " \
                         "For example say: When is the best day to surf Salt Creek"
 #    if number_tries == 0:
@@ -338,9 +339,10 @@ def Get_Water_Temp_For_Spot(intent, session,spots):
         reprompt_text = " "
         should_end_session = True
     else:
-        speech_output = "I'm not sure what your surf spot is. " \
-                        "Please try again."
-        reprompt_text = "I'm not sure what your surf spot is. " \
+ 
+        speech_output = "I'm not sure what surf spot to use with the water temperature report. " \
+                        "Please try again including the surf spot in the report request."
+        reprompt_text = "I don't recognize the surf spot you would like.    Please try another report request and ask for help to more info. " \
                         "For example say: What is the water temp at Salt Creek"
 #    if number_tries == 0:
     session_attributes = create_numberOfTries_attributes(number_tries,surfspotname)
@@ -361,10 +363,12 @@ def get_welcome_response():
                     "what is the surf report for salt creek?" \
                     "For a surf report, You can also just say the surf spot name.  For example, "\
                     "say Lowers, or Salt Creek,      "\
-                    "Once you have the surf report for a spot you can just say," \
+                    "Once you have received a surf report for a spot, Alexa will remember "\
+                    " this spot and you can get other reports without having to repeat the surf spot. "\
+                    " For example: You can just say ," \
                     " What is the tide report?" \
                     " Or you can say, when is the best day to surf?"\
-                    " To continue just say the spot name or ask for more help."
+                    " To continue just say the spot name, ask for a report or ask for more help."
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
     reprompt_text = "Please tell me the spot you are looking for by saying a surf spot, " 
@@ -379,16 +383,21 @@ def get_help_response():
 
     session_attributes = {}
     card_title = "Getting Help for Surf Checker"
-    speech_output = "To get the surf or Tide forecast you need to include the spot name,   "\
+    speech_output = "To get the surf forecast, Tide forecast, or water temperature reports you need to include the spot name,   "\
                     "For example say, " \
                     "what is the surf report for salt creek?" \
                     "or say, What is the tide report for Huntington State Beach on Tuesday?" \
+                    "or say, what is the water temperature at county line"\
                     "For a surf report, You can also just say the surf spot name.  For example, just say uppers, lowers, Salt Creek," \
                     "or Huntington state beach. " \
-                    "Once you have the surf report for a spot you can just say," \
+                    "Once you have received a surf report for a spot, Alexa will remember "\
+                    " this spot and you can get other reports without having to repeat the surf spot. "\
+                    " For example: You can just say ," \
                     " What is the tide report?" \
-                    " Or you can say, when is the best day to surf?"\
-                    " Or you can say, what is the water temp?"
+                    " Or you can say, when is the best day to surf?" \
+                    " Or you can say, what is the water temperature?" \
+                    " I hope this helps.  To continue just say the spot "\
+                    " name, ask for a report or ask for more help."
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
     reprompt_text = "Please tell me the spot you are looking for by saying a surf spot, " 
