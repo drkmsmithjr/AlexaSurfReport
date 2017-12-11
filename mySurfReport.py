@@ -358,7 +358,7 @@ def get_welcome_response():
 
     session_attributes = {}
     card_title = "Welcome from Surf Checker"
-    speech_output = "Welcome to the Surf Checker.   " \
+    speech_output = "Hello, Welcome to the Surf Checker.   " \
                     "Please tell me the surf spot you need the surf or Tide forecast for.   For example say, " \
                     "what is the surf report for salt creek?" \
                     "For a surf report, You can also just say the surf spot name.  For example, "\

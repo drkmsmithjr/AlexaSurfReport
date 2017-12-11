@@ -1,4 +1,4 @@
-Surf Spot,SurfID,Regional ID,Tide Info,WaterTempID
+﻿Surf Spot,SurfID,Regional ID,Tide Info,WaterTempID
 North San Diego,,,,
 tamarack,4242,2144,9410230,
 terra mar point,4775,2144,9410230,
@@ -204,3 +204,26 @@ Half Moon Bay,5007,2957,9414290,
 Tunitas Creek,5005,2957,9414290,
 Pescadero,5018,2957,9414290,
 Pigeon Point,5019,2957,9414290,
+,,,,
+Maui North,,,,
+Honolua Bay,10814,8900,1615680,
+Honokohau Bay,10815,8900,1615680,
+Kahalui Harbor,10816,8900,1615680,
+Kanaha,10813,8900,1615680,
+Ho okipa,10817,8900,1615680,
+Jaws,10818,8900,1615680,
+Taveres Bay,108155,8900,1615395,
+Honomanu Bay,10819,8900,1615395,
+Hana Bay,10820,8900,1615395,
+,,,,
+Maui West,,,,
+Rainbows,10812,3238,TPT2797,1615680
+Lahaina Harbor,5528,3238,TPT2799,1615680
+Olowalu,10809,3238,TPT2799,1615680
+Ma alaea Harbor,7443,3238,TPT2797,1615680
+,,,,
+Maui South,,,,
+The Cove,10810,3239,1615202,1615680
+Big Beach,5520,3239,1615202,1615680
+Dumps,5521,3239,1615202,1615680
+La Perouse Bay,10811,3239,1615202,1615680
