@@ -362,13 +362,14 @@ def get_welcome_response():
                     "Please tell me the surf spot you need the surf or Tide forecast for.   For example say, " \
                     "what is the surf report for salt creek?" \
                     "For a surf report, You can also just say the surf spot name.  For example, "\
-                    "say Lowers, or Salt Creek,      "\
-                    "Once you have received a surf report for a spot, Alexa will remember "\
-                    " this spot and you can get other reports without having to repeat the surf spot. "\
-                    " For example: You can just say ," \
-                    " What is the tide report?" \
-                    " Or you can say, when is the best day to surf?"\
-                    " To continue just say the spot name, ask for a report or ask for more help."
+                    "say Lowers, or Salt Creek.      "\
+                    " You can receive a tide report by saying:" \
+                    " What is the tide report for jaws on Tuesday." \
+                    " To get the water temperature for a surf spot say:" \
+                    " What is the water temperature for San clemente state beach." \
+                    " To get the best day to surf say:" \
+                    " When is the best day to surf Lihaina Harbor?" \
+                    " To continue just say the spot name, ask for a tide report, or ask for more help."
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
     reprompt_text = "Please tell me the spot you are looking for by saying a surf spot, " 
@@ -386,16 +387,10 @@ def get_help_response():
     speech_output = "To get the surf forecast, Tide forecast, or water temperature reports you need to include the spot name,   "\
                     "For example say, " \
                     "what is the surf report for salt creek?" \
-                    "or say, What is the tide report for Huntington State Beach on Tuesday?" \
-                    "or say, what is the water temperature at county line"\
-                    "For a surf report, You can also just say the surf spot name.  For example, just say uppers, lowers, Salt Creek," \
-                    "or Huntington state beach. " \
-                    "Once you have received a surf report for a spot, Alexa will remember "\
-                    " this spot and you can get other reports without having to repeat the surf spot. "\
-                    " For example: You can just say ," \
-                    " What is the tide report?" \
-                    " Or you can say, when is the best day to surf?" \
-                    " Or you can say, what is the water temperature?" \
+                    "or say, What is the tide report for mavericks on Tuesday?" \
+                    "or say, what is the water temperature at county line ."\
+                    "you can also try,  When is the best day to surf Lihaina Harbor?" \
+                    "For a surf report, You can also just say the surf spot name.  For example, just say uppers, lowers, Salt Creek, Hana Bay, or san Clemente state beach." \
                     " I hope this helps.  To continue just say the spot "\
                     " name, ask for a report or ask for more help."
     # If the user either does not reply to the welcome message or says something
