@@ -133,9 +133,9 @@ def Get_Surf_Report_For_Spot(intent, session,spots):
         reprompt_text = " "
         should_end_session = True
     else:
-        speech_output = "I'm not sure what your surf spot is. " \
+        speech_output = "I don't recognize your surf spot or report request. " \
                         "Please try again."
-        reprompt_text = "I'm not sure what your surf spot is. " \
+        reprompt_text = "I don't recognize your surf spot or report request. " \
                         "You can try again buy saying just the spot name, " \
                         "Some examples are lowers, or salt creek."
 #    if number_tries == 0:
@@ -188,7 +188,7 @@ def Get_Tide_Report_For_Spot(intent, session,spots):
         
 
     if 'value' in intent['slots']['SurfSpot'] :
-       spot = intent['slots']['SurfSpot']['value']
+       spot = intent['slots']['SurfSpot']['value'].lower()
     else:
        spot = surfspotname
     if spot in spots:
@@ -219,9 +219,9 @@ def Get_Tide_Report_For_Spot(intent, session,spots):
         should_end_session = True
     else:
         
-        speech_output = "I'm not sure what your surf spot is. " \
+        speech_output = "I don't recognize the surf spot for the tide report. " \
                         "Please try again."
-        reprompt_text = "I'm not sure what your surf spot is. " \
+        reprompt_text = "I don't recognize your surf spot. " \
                         "For example: What is the Tide Report for Salt Creek"
 #    if number_tries == 0:
     session_attributes = create_numberOfTries_attributes(number_tries,surfspotname)
@@ -252,7 +252,7 @@ def Best_Day_To_Surf_Spot(intent, session,spots):
     today = datetime.datetime.now()
 
     if 'value' in intent['slots']['SurfSpot'] :
-       spot = intent['slots']['SurfSpot']['value']
+       spot = intent['slots']['SurfSpot']['value'].lower()
     else:
        spot = surfspotname
     if spot in spots:
@@ -263,7 +263,7 @@ def Best_Day_To_Surf_Spot(intent, session,spots):
         if number_tries == 0:
            number_tries = 1
            speech_output = report.printBestDayToSurf() + ".\n" +" "+teststr + " " +\
-                        "on this day" +\
+                        "on this day " +\
                         report.printReport(report.bestdaytosurf) + ".\n" +\
                         "Would you like another report?  "
            #session_attributes = create_numberOfTries_attributes(number_tries)
@@ -271,7 +271,7 @@ def Best_Day_To_Surf_Spot(intent, session,spots):
            number_tries = number_tries + 1
            #session_attributes = create_numberOfTries_attributes(number_tries)
            speech_output = report.printBestDayToSurf() + ".\n" +" "+teststr + " " +\
-                        "on this day" +\
+                        "on this day " +\
                         report.printReport(report.bestdaytosurf) + ".\n" +\
                         "Would you like another report? "
         reprompt_text = "Would you like another report?  Just say the spot name"
@@ -281,7 +281,7 @@ def Best_Day_To_Surf_Spot(intent, session,spots):
         reprompt_text = " "
         should_end_session = True
     else:
-        speech_output = "I'm not sure what your surf spot is. " \
+        speech_output = "I don't recognize the surf spot for the best day to surf request.  " \
                         "Please try again and include the surf spot.  For example say: When is the best day to surf salt creek."
         reprompt_text = "I'm not sure what your surf spot is. " \
                         "For example say: When is the best day to surf Salt Creek"
@@ -312,7 +312,7 @@ def Get_Water_Temp_For_Spot(intent, session,spots):
     today = datetime.datetime.now()
 
     if 'value' in intent['slots']['SurfSpot'] :
-       spot = intent['slots']['SurfSpot']['value']
+       spot = intent['slots']['SurfSpot']['value'].lower()
     else:
        spot = surfspotname
     if spot in spots:
@@ -342,7 +342,7 @@ def Get_Water_Temp_For_Spot(intent, session,spots):
  
         speech_output = "I'm not sure what surf spot to use with the water temperature report. " \
                         "Please try again including the surf spot in the report request."
-        reprompt_text = "I don't recognize the surf spot you would like.    Please try another report request and ask for help to more info. " \
+        reprompt_text = "I don't recognize the surf spot you would like.    Please try another report request or ask for help to more info. " \
                         "For example say: What is the water temp at Salt Creek"
 #    if number_tries == 0:
     session_attributes = create_numberOfTries_attributes(number_tries,surfspotname)
@@ -362,13 +362,15 @@ def get_welcome_response():
                     "Please tell me the surf spot you need the surf or Tide forecast for.   For example say, " \
                     "what is the surf report for salt creek?" \
                     "For a surf report, You can also just say the surf spot name.  For example, "\
-                    "say Lowers, or Salt Creek,      "\
-                    "Once you have received a surf report for a spot, Alexa will remember "\
-                    " this spot and you can get other reports without having to repeat the surf spot. "\
-                    " For example: You can just say ," \
-                    " What is the tide report?" \
-                    " Or you can say, when is the best day to surf?"\
-                    " To continue just say the spot name, ask for a report or ask for more help."
+                    "say Lowers, Uppers, or Salt Creek.      "\
+                    " You can receive a tide report by saying:" \
+                    " What is the tide report for Uppers on Tuesday." \
+                    " To get the water temperature for a surf spot say:" \
+                    " What is the water temperature for Salt Creek." \
+                    " To get the best day to surf say:" \
+                    " When is the best day to surf Salt Creek?" \
+                    " Ask for more help to get short cuts to more reports. " \
+                    " To continue just say the spot name, ask for a tide report, or ask for more help."
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
     reprompt_text = "Please tell me the spot you are looking for by saying a surf spot, " 
@@ -385,17 +387,21 @@ def get_help_response():
     card_title = "Getting Help for Surf Checker"
     speech_output = "To get the surf forecast, Tide forecast, or water temperature reports you need to include the spot name,   "\
                     "For example say, " \
-                    "what is the surf report for salt creek?" \
-                    "or say, What is the tide report for Huntington State Beach on Tuesday?" \
-                    "or say, what is the water temperature at county line"\
-                    "For a surf report, You can also just say the surf spot name.  For example, just say uppers, lowers, Salt Creek," \
-                    "or Huntington state beach. " \
-                    "Once you have received a surf report for a spot, Alexa will remember "\
-                    " this spot and you can get other reports without having to repeat the surf spot. "\
-                    " For example: You can just say ," \
-                    " What is the tide report?" \
-                    " Or you can say, when is the best day to surf?" \
-                    " Or you can say, what is the water temperature?" \
+                    "what is the surf report for Salt Creek?" \
+                    "or say, What is the tide report for Uppers on Tuesday?" \
+                    "or say, what is the water temperature at Uppers? ."\
+                    "you can also try,  When is the best day to surf Salt Creek?" \
+                    "For a surf report, You can also just say the surf spot name ."\
+                    "For example, just say uppers, lowers, or Salt Creek ." \
+                    "Alexa also remembers the last surf report you request" \
+                    "so that additional reports do not have to include the spot name. "\
+                    "For example once you ask for a report such as: "\
+                    "What is the surf report for Pismo Beach Pier. "\
+                    "You can get the tide, water temperature, and best day "\
+                    "to surf at Pismo Beach Pier by asking: "\
+                    "What is the tide report." \
+                    " then say: When is the best day to surf." \
+                    " then say: What is the water temperature. " \
                     " I hope this helps.  To continue just say the spot "\
                     " name, ask for a report or ask for more help."
     # If the user either does not reply to the welcome message or says something
