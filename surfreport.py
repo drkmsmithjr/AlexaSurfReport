@@ -76,9 +76,10 @@ hourcorrection = datetime.timedelta(hours = 7)
 # format of the Surfspot.csv file.  surf sPOTS CAN BE ANY CASE They will be converted to LOWER
 # case below
 # row 1 top of file:   Surf Spot	SurfID	Regional ID	Tide Info
+# row 1 top of file:   Surf Spot	SurfID	Regional ID	Tide Info	WaterTempID	Alt Name 1	Alt Name 2	Alt Name 3
 # row 2 regions:    North San Diego
 # row 3 spot: Tamarack	4242	2144	9410230
-# row 4 spot:"
+# row 4 spot:
 # row x Region:
 # row x+1 spots:
 
@@ -89,7 +90,14 @@ def getsurfspots(spots2):
       for row in csvreader:
          if row[0] != 'Surf Spot' and row[1] != "":
             #print row
-            spots[row[0].lower()] = [row[1],row[2],row[3],row[4]] 
+            spots[row[0].lower()] = [row[1],row[2],row[3],row[4]]
+            # create entries for up to three alternate names if they are present:
+            if row[5] != "":
+               spots[row[5].lower()] = [row[1],row[2],row[3],row[4]]
+            if row[6] != "":
+               spots[row[6].lower()] = [row[1],row[2],row[3],row[4]]
+            if row[7] != "":
+               spots[row[7].lower()] = [row[1],row[2],row[3],row[4]]               
          #else: 
             #print("the first row or a region label")
    #spots2['Tamarack'] = ["4242","2144","9410230"]  
@@ -373,8 +381,16 @@ class SurfSpot:
                   daysAvgMin=int(regionalReport["Analysis"]["surfMin"][day])
                   self.surfText.append(regionalReport["Analysis"]["surfText"][day])
             else:
-               daysAvgMax=int(regionalReport["Analysis"]["surfMax"][day])
-               daysAvgMin=int(regionalReport["Analysis"]["surfMin"][day])
+               daysAvgMax=(regionalReport["Analysis"]["surfMax"][day])
+               if daysAvgMax == "":
+                  daysAvgMax = 0
+               else:
+                  daysAvgMax = int(daysAvgMax)
+               daysAvgMin=(regionalReport["Analysis"]["surfMin"][day])
+               if daysAvgMin == "":
+                  daysAvgMin = 0
+               else:
+                  daysAvgMin = int(daysAvgMin)
                self.surfText.append(regionalReport["Analysis"]["surfText"][day])
                                 
  #           self.heightsMax.append(Decimal(daysAvgMax).quantize(Decimal('1'), rounding=ROUND_UP))
