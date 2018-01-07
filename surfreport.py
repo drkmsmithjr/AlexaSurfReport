@@ -32,38 +32,38 @@ import csv
 # forth number: NOAA Water temp location backup.  If not available at Tide ID location
 
 spots = {
-    'uppers':["4738","2950","TWC0419","9410230"],
-    'upper trestles':["4738","2950","TWC0419","9410230"],
-    'upper':["4738","2950","TWC0419","9410230"],
-    'salt creek':["4233","2950","TWC0419","9410230"],
-    'doheny':["4848","2950","TWC0419","9410230"],
-    'do heaney':["4848","2950","TWC0419","9410230"],
-    'doheny state beach':["4848","2950","TWC0419","9410230"],
-    'lowers':["4740","2950","TWC0419","9410230"],
-    'lower trestles':["4740","2950","TWC0419","9410230"],
-    'lower':["4740","2950","TWC0419","9410230"],
-    't-street':["4235","2950","TWC0419","9410230"],
-    't. street' :["4235","2950","TWC0419","9410230"],
-    'san clementi state beach':["4843","2950","TWC0419","9410230"],
-    'san clemente state beach':["4843","2950","TWC0419","9410230"], 
-    'the point':["4237","2950","TWC0419","9410230"],
-    'old mans':["109918","2950","TWC0419","9410230"],
-    'hb pier':["4874","2143","9410580","9410230"],
-    'h. b. pier':["4874","2143","9410580","9410230"],
-    'huntington beach pier':["4874","2143","9410580","9410230"],
-    '56th street':["43103","2143","9410580","9410230"],
-    'fifty sixth street':["43103","2143","9410580","9410230"],
-    'the wedge':["4232","2143","9410580","9410230"],
-    'goldenwest':["4870","2143","9410580","9410230"],
-    'golden west':["4870","2143","9410580","9410230"],
-    'huntington state beach':["103681","2143","9410580","9410230"],
-    'seal beach':["4217","2143","9410580","9410230"],
-    'bolsa chica':["4868","2143","9410580","9410230"],
-    'bolsa chica state beach':["4868","2143","9410580","9410230"],
-    'newport point':["4877","2143","9410580","9410230"],
-    'blackies':["53412","2143","9410580","9410230"],    
-    'oceanside harbor':["4238","2144","TWC0419","9410230"],
-    'oceanside pier':["68366","2144","TWC0419","9410230"]
+    'uppers':["4738","2950","TWC0419","9410660"],
+    'upper trestles':["4738","2950","TWC0419","9410660"],
+    'upper':["4738","2950","TWC0419","9410660"],
+    'salt creek':["4233","2950","TWC0419","9410660"],
+    'doheny':["4848","2950","TWC0419","9410660"],
+    'do heaney':["4848","2950","TWC0419","9410660"],
+    'doheny state beach':["4848","2950","TWC0419","9410660"],
+    'lowers':["4740","2950","TWC0419","9410660"],
+    'lower trestles':["4740","2950","TWC0419","9410660"],
+    'lower':["4740","2950","TWC0419","9410660"],
+    't-street':["4235","2950","TWC0419","9410660"],
+    't. street' :["4235","2950","TWC0419","9410660"],
+    'san clementi state beach':["4843","2950","TWC0419","9410660"],
+    'san clemente state beach':["4843","2950","TWC0419","9410660"], 
+    'the point':["4237","2950","TWC0419","9410660"],
+    'old mans':["109918","2950","TWC0419","9410660"],
+    'hb pier':["4874","2143","9410580","9410660"],
+    'h. b. pier':["4874","2143","9410580","9410660"],
+    'huntington beach pier':["4874","2143","9410580","9410660"],
+    '56th street':["43103","2143","9410580","9410660"],
+    'fifty sixth street':["43103","2143","9410580","9410660"],
+    'the wedge':["4232","2143","9410580","9410660"],
+    'goldenwest':["4870","2143","9410580","9410660"],
+    'golden west':["4870","2143","9410580","9410660"],
+    'huntington state beach':["103681","2143","9410580","9410660"],
+    'seal beach':["4217","2143","9410580","9410660"],
+    'bolsa chica':["4868","2143","9410580","9410660"],
+    'bolsa chica state beach':["4868","2143","9410580","9410660"],
+    'newport point':["4877","2143","9410580","9410660"],
+    'blackies':["53412","2143","9410580","9410660"],    
+    'oceanside harbor':["4238","2144","TWC0419","9410660"],
+    'oceanside pier':["68366","2144","TWC0419","9410660"]
     
 }
 
@@ -78,7 +78,7 @@ hourcorrection = datetime.timedelta(hours = 7)
 # row 1 top of file:   Surf Spot	SurfID	Regional ID	Tide Info
 # row 1 top of file:   Surf Spot	SurfID	Regional ID	Tide Info	WaterTempID	Alt Name 1	Alt Name 2	Alt Name 3
 # row 2 regions:    North San Diego
-# row 3 spot: Tamarack	4242	2144	9410230
+# row 3 spot: Tamarack	4242	2144	9410660
 # row 4 spot:
 # row x Region:
 # row x+1 spots:
@@ -330,9 +330,15 @@ class SurfSpot:
         tempsum = 0
         if WaterTempReport.get("data"):
            for t in range(len(WaterTempReport["data"])):
-              count += 1
-              tempsum = tempsum + float(WaterTempReport["data"][t]["v"])
+              try:              
+                 tempsum = tempsum + float(WaterTempReport["data"][t]["v"])
+                 count += 1
+              except:
+                 tempsum = tempsum + 0
+              #tempsum = tempsum + float(WaterTempReport["data"][t]["v"])
               #print(tempsum)
+           if count == 0:
+              count = 1           
            self.waterTemp =  round(float(tempsum/count),1)
         else:
            self.waterTemp = 0
@@ -377,8 +383,16 @@ class SurfSpot:
                   daysAvgMin=int(rep["Analysis"]["surfMin"][day])
                   self.surfText.append(rep["Analysis"]["surfText"][day])
                else:
-                  daysAvgMax=int(regionalReport["Analysis"]["surfMax"][day])
-                  daysAvgMin=int(regionalReport["Analysis"]["surfMin"][day])
+                  daysAvgMax=(regionalReport["Analysis"]["surfMax"][day])
+                  if daysAvgMax == "":
+                     daysAvgMax = 0
+                  else:
+                     daysAvgMax = int(daysAvgMax)
+                  daysAvgMin=(regionalReport["Analysis"]["surfMin"][day])
+                  if daysAvgMin == "":
+                     daysAvgMin = 0
+                  else:
+                     daysAvgMin = int(daysAvgMin)
                   self.surfText.append(regionalReport["Analysis"]["surfText"][day])
             else:
                daysAvgMax=(regionalReport["Analysis"]["surfMax"][day])
