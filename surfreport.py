@@ -68,7 +68,9 @@ spots = {
 }
 
 daysInReport = 6
-conditionTypes=["","flat", "very poor", "poor","poor to fair","fair","fair to good","good","very good","good to epic","epic"]
+#conditionTypes=["","flat", "very poor", "poor","poor to fair","fair","fair to good","good","very good","good to epic","epic"]
+conditionTypes=["","flat","FLAT", "very poor","VERY POOR", "poor","POOR","poor to fair","POOR TO FAIR","fair","FAIR","fair to good","FAIR TO GOOD","good","GOOD","very good","VERY GOOD","good to epic","GOOD TO EPIC","epic","EPIC"]
+
 
 # to account for the Server Location in Ireland
 hourcorrection = datetime.timedelta(hours = 7)
